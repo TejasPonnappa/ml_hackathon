@@ -54,6 +54,8 @@ async def lifespan(_app):
     info = model_info()
     log.info(f"STARTUP | model={info['model']} ({info['path']}) | data_dir={partition_dir(DATA_DIR)} "
              f"| n_trips={len(list_trips(DATA_DIR))} | HMM available={_hmm_available()} | log={LOG_FILE}")
+    if _hmm_available():
+        log.info("STARTUP | " + " ".join(_hmm_params_note().split()))
     yield
 
 
@@ -63,7 +65,7 @@ app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], all
 
 def _hmm_available() -> bool:
     try:
-        import src.hmm.decoder  # noqa: F401
+        from src.hmm.viterbi import decode_trip  # noqa: F401
         return True
     except ImportError:
         return False
@@ -74,10 +76,21 @@ def decode_hmm(trip, hmm_in: dict) -> dict[int, int] | None:
     """Call Person B's HMM/Viterbi decoder. Returns {obs_idx: arc_id}, or None if not available yet.
     This is the ONLY place the API depends on src/hmm."""
     try:
-        from src.hmm.decoder import decode_trip      # agreed entry point (see API_CONTRACT.md)
+        from src.hmm.viterbi import decode_trip      # Person B's entry point: decode_trip(trip, hmm_in, params=None)
     except ImportError:
         return None
+    # params=None -> the decoder reads its tuned parameters from results/b_hmm_best.json itself
     return {int(k): int(v) for k, v in decode_trip(trip, hmm_in).items()}
+
+
+HMM_PARAMS_FILE = RESULTS_DIR / "b_hmm_best.json"
+
+
+def _hmm_params_note() -> str:
+    """Startup log: which decoder parameter file the HMM will use (read, never copied into this file)."""
+    if not HMM_PARAMS_FILE.exists():
+        return "HMM params: b_hmm_best.json MISSING -> decoder defaults"
+    return f"HMM params: {HMM_PARAMS_FILE.name} = {HMM_PARAMS_FILE.read_text(encoding='utf-8')[:300].strip()}"
 
 
 # ------------------------------------------------------------------ geometry helpers
@@ -226,6 +239,6 @@ def predict(req: PredictRequest, request: Request):
              f"eval={timings['evaluation']}ms total={timings['total']}ms | "
              f"top1_hmm={f4(metrics['top1_accuracy_hmm'])} top1_clf={f4(metrics['top1_accuracy_classifier'])} | "
              f"cont_hmm={f4(metrics['route_continuity_hmm'])}"
-             + ("" if hmm is not None else " | HMM not available (src/hmm/decoder.py missing)"))
+             + ("" if hmm is not None else " | HMM not available (src/hmm/viterbi.py missing)"))
     return {"trip_id": tid, "model": model_info()["model"], "n_obs": n, "gps": gps,
             "hmm_route": hmm_route, "classifier_route": clf_route, "metrics": metrics, "timings_ms": timings}
