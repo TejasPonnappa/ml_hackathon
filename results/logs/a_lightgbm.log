@@ -1,0 +1,7 @@
+﻿[11:00:45] [lightgbm] train rows=1,162,595 obs=180,715 trips=78 pos_rate=0.155
+[11:00:59] [lightgbm] fold 1: macro_f1=0.9126 top1=0.8629 logloss=0.1170 fit=12.0s
+[11:01:11] [lightgbm] fold 2: macro_f1=0.9415 top1=0.9040 logloss=0.0719 fit=11.2s
+[11:01:24] [lightgbm] fold 3: macro_f1=0.9538 top1=0.9301 logloss=0.0598 fit=11.5s
+[11:01:37] [lightgbm] fold 4: macro_f1=0.9160 top1=0.8666 logloss=0.1056 fit=11.4s
+[11:01:50] [lightgbm] fold 5: macro_f1=0.9246 top1=0.8755 logloss=0.1087 fit=11.8s
+[11:02:04] [lightgbm] CV macro_f1=0.9293±0.0175 top1=0.8865 | student_test macro_f1=0.9313 top1=0.8895 logloss=0.0839 continuity=0.9813 | fit=9.8s infer=0.55s
