@@ -1,0 +1,13 @@
+file,column,dtype
+track,obs_idx,int64
+track,lon,float64
+track,lat,float64
+track,t,float64
+nodes,node_id,int64
+nodes,lon,float64
+nodes,lat,float64
+arcs,arc_id,int64
+arcs,from_node,int64
+arcs,to_node,int64
+route,seq,int64
+route,arc_id,int64

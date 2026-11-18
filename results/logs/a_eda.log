@@ -1,0 +1,109 @@
+﻿{
+  "student_test": {
+    "trips": 10,
+    "obs_total": 19160,
+    "obs_per_trip_median": 1420.0,
+    "obs_per_trip_min": 262,
+    "obs_per_trip_max": 3958,
+    "missing_files": 0,
+    "nan_values": 0,
+    "frac_dt_1s_mean": 0.9819896936551981,
+    "trips_non_monotonic_time": 0,
+    "trips_with_gap_gt30s": 2,
+    "nodes_median": 6596.5,
+    "arcs_median": 13145.0,
+    "arcs_max": 56027,
+    "isolated_nodes_total": 0,
+    "components_median": 11.0,
+    "frac_two_way_mean": 0.926940290876092,
+    "route_fully_connected_trips": 9,
+    "route_arcs_per_obs_median": 0.22024222605428445,
+    "ref_dist_median_m_median": 4.749810381424318,
+    "lon_range": [
+      -93.3945625,
+      77.2621375
+    ],
+    "lat_range": [
+      42.651654,
+      61.669172
+    ],
+    "proj_vs_haversine_max_rel_err": 0.0037268063849457563
+  },
+  "train": {
+    "trips": 80,
+    "obs_total": 208417,
+    "obs_per_trip_median": 1529.0,
+    "obs_per_trip_min": 361,
+    "obs_per_trip_max": 19313,
+    "missing_files": 0,
+    "nan_values": 0,
+    "frac_dt_1s_mean": 0.938296103658152,
+    "trips_non_monotonic_time": 0,
+    "trips_with_gap_gt30s": 28,
+    "nodes_median": 9608.0,
+    "arcs_median": 19526.5,
+    "arcs_max": 307392,
+    "isolated_nodes_total": 0,
+    "components_median": 20.0,
+    "frac_two_way_mean": 0.9216733541064445,
+    "route_fully_connected_trips": 70,
+    "route_arcs_per_obs_median": 0.18911258146030058,
+    "ref_dist_median_m_median": 4.637258660240959,
+    "lon_range": [
+      -100.355453,
+      137.220476
+    ],
+    "lat_range": [
+      -34.62505,
+      61.2478225
+    ],
+    "proj_vs_haversine_max_rel_err": 0.005582673259089623
+  }
+}
+       partition   trip_id                                                                          issues
+0          train  00000001                                                               52 jumps > 60 m/s
+1          train  00000002                                       10 gaps > 30 s; route not fully connected
+2          train  00000004                                                                   2 gaps > 30 s
+3          train  00000005                                                                1 jumps > 60 m/s
+4          train  00000006                                                                   3 gaps > 30 s
+5          train  00000008                                                                1 jumps > 60 m/s
+6          train  00000011                                                                   1 gaps > 30 s
+7          train  00000013                                                              103 jumps > 60 m/s
+8          train  00000014                                                                   1 gaps > 30 s
+9          train  00000019                                                       route not fully connected
+10         train  00000021                                       2 gaps > 30 s; very long trip (15783 obs)
+11         train  00000024                                                 2 gaps > 30 s; 6 jumps > 60 m/s
+12         train  00000028                                                 4 gaps > 30 s; 2 jumps > 60 m/s
+13         train  00000031                                                                1 jumps > 60 m/s
+14         train  00000032                                               1 gaps > 30 s; 365 jumps > 60 m/s
+15         train  00000033  route far from GPS (median 122 m); 3 jumps > 60 m/s; route not fully connected
+16         train  00000037                                                                   3 gaps > 30 s
+17         train  00000041                                        1 gaps > 30 s; route not fully connected
+18         train  00000042                                       22 gaps > 30 s; route not fully connected
+19         train  00000043                                                 2 gaps > 30 s; 5 jumps > 60 m/s
+20         train  00000044                                                                   2 gaps > 30 s
+21         train  00000053                                                                2 jumps > 60 m/s
+22         train  00000054    route far from GPS (median 140 m); 2 gaps > 30 s; very long trip (19313 obs)
+23         train  00000055                                                 1 gaps > 30 s; 1 jumps > 60 m/s
+24         train  00000057                                                                1 jumps > 60 m/s
+25         train  00000062                                                                   5 gaps > 30 s
+26         train  00000069                                        2 gaps > 30 s; route not fully connected
+27         train  00000070                                                                   1 gaps > 30 s
+28         train  00000075                                                       route not fully connected
+29         train  00000078                                                                   2 gaps > 30 s
+30         train  00000079                                                                2 jumps > 60 m/s
+31         train  00000080                                        2 gaps > 30 s; route not fully connected
+32         train  00000081                                                                  37 gaps > 30 s
+33         train  00000084                                       4 gaps > 30 s; very long trip (16031 obs)
+34         train  00000085                                                 4 gaps > 30 s; 1 jumps > 60 m/s
+35         train  00000086                                                       route not fully connected
+36         train  00000088                                                                   7 gaps > 30 s
+37         train  00000089                                        7 gaps > 30 s; route not fully connected
+38         train  00000090                                                                   1 gaps > 30 s
+39         train  00000092                                                                4 jumps > 60 m/s
+40         train  00000093                                                                1 jumps > 60 m/s
+41         train  00000098                                                 2 gaps > 30 s; 2 jumps > 60 m/s
+42  student_test  00000000                                                                1 jumps > 60 m/s
+43  student_test  00000040                                                                1 jumps > 60 m/s
+44  student_test  00000065                                                                   1 gaps > 30 s
+45  student_test  00000076                                        1 gaps > 30 s; route not fully connected
