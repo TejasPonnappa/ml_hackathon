@@ -1,17 +1,24 @@
 """Geometry helpers in metric coordinates (owner: Person A).
 
-WHY UTM ZONE 32N (EPSG:32632)?
-  * The data lies around lon ~8.6 E, lat ~49.8 N (Darmstadt / Rhine-Main area,
-    Germany). UTM zone 32N covers 6-12 E, so every trip is inside one zone.
-  * UTM is conformal and its scale error inside a zone is < 0.1 %, i.e. < 1 m
-    over a 1 km trip, far below GPS noise (~5-20 m). Distances and angles
-    computed with plain Euclidean geometry on (x, y) metres are therefore valid.
-  * Raw degree-Euclidean distance is WRONG here: at 49.8 N one degree of
-    longitude is ~72 km but one degree of latitude is ~111 km, so it would
-    distort distances by ~35 % depending on direction.
-  * haversine() below is kept only as an independent sanity check.
+PROJECTION CHOICE: per-trip local Azimuthal Equidistant (AEQD)
+  * EDA showed the trips are spread over the whole world (Europe, Russia,
+    North/South America, Asia, Africa), with longitudes from about -100 to +137
+    and latitudes from about -35 to +61. A single fixed CRS (e.g. one UTM zone)
+    is only valid within a 6-degree band and breaks for most trips.
+  * Each trip is local (a few km to tens of km), so we build one projection per
+    trip, centred on the median of its GPS track:
+        +proj=aeqd +lat_0=<lat0> +lon_0=<lon0> +datum=WGS84 +units=m
+    Distances measured from the centre are exact; the scale error at distance d
+    from the centre is about (d/R)^2/6, i.e. ~0.001 % at 50 km. That is negligible
+    compared with GPS noise (metres), so plain Euclidean geometry on (x, y)
+    metres is valid inside a trip.
+  * The centre comes from the TRACK only (never the route), so this is safe to
+    use in the prediction pipeline.
+  * Degree-Euclidean distance is wrong: at 55 N one degree of longitude is ~64 km
+    while one degree of latitude is ~111 km.
+  * haversine() is kept as an independent sanity check.
 
-All functions are vectorised with numpy so they work on whole trips at once.
+All functions are vectorised with numpy.
 """
 from __future__ import annotations
 
@@ -19,33 +26,41 @@ import numpy as np
 import pandas as pd
 from pyproj import Transformer
 
-from .config import METRIC_CRS
-
-# always_xy=True -> input order is (lon, lat), output order is (x=easting, y=northing).
-# This guards against the classic lat/lon swap bug.
-_TO_METRIC = Transformer.from_crs("EPSG:4326", METRIC_CRS, always_xy=True)
-_TO_LONLAT = Transformer.from_crs(METRIC_CRS, "EPSG:4326", always_xy=True)
-
 EARTH_RADIUS_M = 6_371_008.8
 
 
-def to_xy(lon, lat):
-    """lon/lat in degrees -> (x, y) in metres (UTM 32N)."""
-    x, y = _TO_METRIC.transform(np.asarray(lon, float), np.asarray(lat, float))
-    return np.asarray(x), np.asarray(y)
+class LocalProjector:
+    """lon/lat <-> local metric (x east, y north) centred on (lon0, lat0)."""
+
+    def __init__(self, lon0: float, lat0: float):
+        self.lon0, self.lat0 = float(lon0), float(lat0)
+        crs = (f"+proj=aeqd +lat_0={self.lat0} +lon_0={self.lon0} "
+               f"+datum=WGS84 +units=m +no_defs")
+        # always_xy=True -> input/output order is (lon, lat) / (x, y); avoids lat/lon swaps
+        self._fwd = Transformer.from_crs("EPSG:4326", crs, always_xy=True)
+        self._inv = Transformer.from_crs(crs, "EPSG:4326", always_xy=True)
+
+    def to_xy(self, lon, lat):
+        x, y = self._fwd.transform(np.asarray(lon, float), np.asarray(lat, float))
+        return np.asarray(x), np.asarray(y)
+
+    def to_lonlat(self, x, y):
+        lon, lat = self._inv.transform(np.asarray(x, float), np.asarray(y, float))
+        return np.asarray(lon), np.asarray(lat)
 
 
-def to_lonlat(x, y):
-    """Inverse of to_xy (used to send geometry back to maps)."""
-    lon, lat = _TO_LONLAT.transform(np.asarray(x, float), np.asarray(y, float))
-    return np.asarray(lon), np.asarray(lat)
+def trip_projector(trip) -> LocalProjector:
+    """Projector centred on the median GPS position of a trip (cached on the Trip)."""
+    proj = getattr(trip, "_proj", None)
+    if proj is None:
+        proj = LocalProjector(trip.track["lon"].median(), trip.track["lat"].median())
+        trip._proj = proj
+    return proj
 
 
-def add_xy(df: pd.DataFrame) -> pd.DataFrame:
-    """Return a copy of a DataFrame with lon/lat columns plus projected x, y columns."""
-    out = df.copy()
-    out["x"], out["y"] = to_xy(out["lon"].to_numpy(), out["lat"].to_numpy())
-    return out
+def track_xy(trip):
+    """(x, y) metres of every GPS observation of a trip."""
+    return trip_projector(trip).to_xy(trip.track["lon"].to_numpy(), trip.track["lat"].to_numpy())
 
 
 def haversine(lon1, lat1, lon2, lat2):
@@ -76,7 +91,7 @@ def point_segment_distance(px, py, ax, ay, bx, by):
     t    : position of that closest point along AB, clamped to [0, 1]
            (0 = at A / from-node, 1 = at B / to-node)
 
-    Math: project P onto the infinite line through A,B:
+    Math: project P onto the line through A,B:
           t = ((P-A)·(B-A)) / |B-A|^2, clamp t to [0,1], closest = A + t(B-A).
     Zero-length segments (A == B) fall back to the distance to A.
     """
@@ -91,14 +106,18 @@ def point_segment_distance(px, py, ax, ay, bx, by):
     return dist, t
 
 
-def arc_geometry(nodes: pd.DataFrame, arcs: pd.DataFrame) -> pd.DataFrame:
-    """Per-arc metric geometry: endpoints, length, bearing, midpoint.
+def arc_geometry(trip) -> pd.DataFrame:
+    """Per-arc metric geometry for a trip: endpoints, length, bearing, midpoint.
 
-    Arcs are treated as straight segments between their two nodes (the data
-    only gives node coordinates, no intermediate shape points).
-    Returned DataFrame is indexed by arc_id.
+    Arcs are straight segments between their two nodes (the data gives only
+    node coordinates, no intermediate shape points). Indexed by arc_id.
+    Cached on the Trip object because candidates, labels and features all need it.
     """
-    nx_, ny_ = to_xy(nodes["lon"].to_numpy(), nodes["lat"].to_numpy())
+    g = getattr(trip, "_geom", None)
+    if g is not None:
+        return g
+    nodes, arcs = trip.nodes, trip.arcs
+    nx_, ny_ = trip_projector(trip).to_xy(nodes["lon"].to_numpy(), nodes["lat"].to_numpy())
     u = arcs["from_node"].to_numpy()
     v = arcs["to_node"].to_numpy()
     ax, ay, bx, by = nx_[u], ny_[u], nx_[v], ny_[v]
@@ -109,5 +128,6 @@ def arc_geometry(nodes: pd.DataFrame, arcs: pd.DataFrame) -> pd.DataFrame:
         "length_m": np.hypot(bx - ax, by - ay),
         "bearing": bearing_deg(bx - ax, by - ay),
         "mx": (ax + bx) / 2, "my": (ay + by) / 2,
-    })
-    return g.set_index("arc_id", drop=False)
+    }).set_index("arc_id", drop=False)
+    trip._geom = g
+    return g

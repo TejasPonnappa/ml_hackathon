@@ -7,6 +7,8 @@ PathSnap_student_materials/
 # --- Regenerable intermediate data (candidate/feature tables) ---
 # Rebuilt by scripts in src/; too large for git.
 data_cache/
+# per-observation K/R table (~15 MB, regenerable with python -m src.ml.choose_kr)
+results/a_eda_kr_obs.csv
 
 # --- Python / environments ---
 .venv/

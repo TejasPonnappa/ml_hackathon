@@ -1,0 +1,28 @@
+{
+  "K": 10,
+  "R_m": 50.0,
+  "anomalous_trips": [
+    "00000033",
+    "00000054"
+  ],
+  "train": {
+    "trips": 80,
+    "obs": 208417,
+    "candidate_rows": 1228186,
+    "positive_rate": 0.14976477504221672,
+    "candidate_miss_rate_all": 0.11744723319115047,
+    "candidate_miss_rate_excl_anomalous": 0.016604823747680908,
+    "obs_without_candidates": 18230,
+    "build_seconds": 10.3
+  },
+  "student_test": {
+    "trips": 10,
+    "obs": 19160,
+    "candidate_rows": 131528,
+    "positive_rate": 0.1452922571619731,
+    "candidate_miss_rate_all": 0.0026096033402922547,
+    "candidate_miss_rate_excl_anomalous": 0.0026096033402922547,
+    "obs_without_candidates": 0,
+    "build_seconds": 1.1
+  }
+}

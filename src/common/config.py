@@ -27,8 +27,13 @@ RESULTS_DIR = REPO_ROOT / "results"
 ARTIFACTS_DIR = REPO_ROOT / "artifacts"
 CACHE_DIR = REPO_ROOT / "data_cache"   # regenerable candidate/feature tables (git-ignored)
 
-# Metric CRS used for all distance computations (see geo.py for justification).
-METRIC_CRS = "EPSG:32632"   # WGS 84 / UTM zone 32N
+# Metric coordinates: a per-trip local azimuthal-equidistant projection
+# (trips are worldwide, so no single CRS fits) - see geo.py.
+
+# Train trips whose .route does not match the GPS track (EDA: median GPS-to-route
+# distance 120-140 m vs ~5 m for every other trip). Excluded from model FITTING
+# only; listed in report/a_section2_notes.md.
+ANOMALOUS_TRIPS = {"00000054", "00000033"}
 
 # Global random seed for every experiment (recorded in result files).
 SEED = 42
