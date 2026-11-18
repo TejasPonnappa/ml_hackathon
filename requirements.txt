@@ -25,3 +25,7 @@ folium==1.0.0
 # API
 fastapi==0.163.2
 uvicorn==0.54.0
+
+# UI (Streamlit app on Laptop 2; requests is also used by src/viz/folium_map.py)
+streamlit==1.67.0
+requests==2.34.2
