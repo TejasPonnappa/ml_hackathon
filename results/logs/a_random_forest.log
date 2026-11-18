@@ -1,0 +1,7 @@
+﻿[11:46:14] [random_forest] train rows=1,162,595 obs=180,715 trips=78 pos_rate=0.155
+[11:47:02] [random_forest] fold 1: macro_f1=0.9115 top1=0.8590 logloss=0.1165 fit=46.1s
+[11:47:48] [random_forest] fold 2: macro_f1=0.9406 top1=0.9016 logloss=0.0742 fit=44.8s
+[11:48:34] [random_forest] fold 3: macro_f1=0.9517 top1=0.9263 logloss=0.0643 fit=44.7s
+[11:49:36] [random_forest] fold 4: macro_f1=0.9143 top1=0.8644 logloss=0.1064 fit=61.5s
+[11:50:56] [random_forest] fold 5: macro_f1=0.9265 top1=0.8778 logloss=0.1047 fit=77.0s
+[11:53:45] [random_forest] CV macro_f1=0.9285±0.0172 top1=0.8846 | student_test macro_f1=0.9285 top1=0.8803 logloss=0.0866 continuity=0.9789 | fit=161.8s infer=1.67s
