@@ -1,0 +1,27 @@
+# Pinned so the saved model loads identically on every laptop (Python 3.13).
+# Person B owns this file; Person A appends ML packages.
+# Install:  python -m venv .venv  &&  .venv\Scripts\pip install -r requirements.txt
+
+# data / geo
+numpy==2.5.5
+pandas==3.1.1
+pyarrow==26.0.1
+scipy==1.18.1
+pyproj==3.8.0
+shapely==2.2.0
+networkx==3.7
+
+# ML
+scikit-learn==1.9.1
+lightgbm==4.7.0
+xgboost==3.4.1
+optuna==5.1.0
+joblib==1.6.0
+
+# viz
+matplotlib==3.11.2
+folium==1.0.0
+
+# API
+fastapi==0.163.2
+uvicorn==0.54.0
