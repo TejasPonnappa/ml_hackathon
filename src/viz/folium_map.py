@@ -89,29 +89,30 @@ def make_map(trip_id: str, partition: str = "student_test", api_url: str | None 
     folium.PolyLine(_lines(trip, ref_arcs), color="#1a9e1a", weight=7, opacity=.75).add_to(ref)
     ref.add_to(m)
 
-    clf_lines = pred["classifier_route"] if pred else classifier_only_local(trip)
-    clf = folium.FeatureGroup(name="Classifier-only route")
-    for line in clf_lines:
-        folium.PolyLine(line, color="#ff7f0e", weight=4, opacity=.9).add_to(clf)
-    clf.add_to(m)
+    # Draw order = stacking order: GPS dots first (faint, underneath), then the route lines on top of them.
+    gps = folium.FeatureGroup(name=f"Raw GPS ({len(tr):,} points)")
+    step = max(1, len(tr) // 3000)
+    for r in tr.iloc[::step].itertuples():
+        folium.CircleMarker([r.lat, r.lon], radius=1.5, color="#1f4fd1", fill=True, fill_opacity=.5, weight=0,
+                            tooltip=f"obs {r.obs_idx}, t={r.t:.0f}s").add_to(gps)
+    folium.Marker([tr.lat.iloc[0], tr.lon.iloc[0]], tooltip="start", icon=folium.Icon(color="green")).add_to(gps)
+    folium.Marker([tr.lat.iloc[-1], tr.lon.iloc[-1]], tooltip="end", icon=folium.Icon(color="red")).add_to(gps)
+    gps.add_to(m)
 
     note = ""
     if pred:
         hmm = folium.FeatureGroup(name="HMM predicted route")
         for line in pred["hmm_route"]:
-            folium.PolyLine(line, color="#d62728", weight=3, opacity=.95).add_to(hmm)
+            folium.PolyLine(line, color="#d62728", weight=5, opacity=.95).add_to(hmm)
         hmm.add_to(m)
     else:
         note = " <i>(not available: run with --api)</i>"
 
-    gps = folium.FeatureGroup(name=f"Raw GPS ({len(tr):,} points)")
-    step = max(1, len(tr) // 3000)
-    for r in tr.iloc[::step].itertuples():
-        folium.CircleMarker([r.lat, r.lon], radius=2, color="#1f4fd1", fill=True, fill_opacity=.8, weight=0,
-                            tooltip=f"obs {r.obs_idx}, t={r.t:.0f}s").add_to(gps)
-    folium.Marker([tr.lat.iloc[0], tr.lon.iloc[0]], tooltip="start", icon=folium.Icon(color="green")).add_to(gps)
-    folium.Marker([tr.lat.iloc[-1], tr.lon.iloc[-1]], tooltip="end", icon=folium.Icon(color="red")).add_to(gps)
-    gps.add_to(m)
+    clf_lines = pred["classifier_route"] if pred else classifier_only_local(trip)
+    clf = folium.FeatureGroup(name="Classifier-only route")   # thinner line over the thicker HMM line
+    for line in clf_lines:
+        folium.PolyLine(line, color="#ff7f0e", weight=3, opacity=.9).add_to(clf)
+    clf.add_to(m)
 
     folium.LayerControl(collapsed=False).add_to(m)
     m.get_root().html.add_child(folium.Element(LEGEND.format(title=f"PathSnap - {partition} trip {trip_id}", note=note)))
