@@ -96,25 +96,26 @@ def build_map(res: dict, show_classifier: bool) -> folium.Map:
     lats, lons = [p[0] for p in gps], [p[1] for p in gps]
     m.fit_bounds([[min(lats), min(lons)], [max(lats), max(lons)]])
 
-    if show_classifier:
-        clf = folium.FeatureGroup(name="Classifier-only route (orange)", show=True)
-        for line in res.get("classifier_route", []):
-            if len(line) > 1:
-                folium.PolyLine(line, color="#ff7f0e", weight=4, opacity=0.85).add_to(clf)
-        clf.add_to(m)
+    # Draw order = stacking order: GPS dots first (faint, underneath), then the route lines on top of them.
+    pts = folium.FeatureGroup(name=f"Raw GPS ({len(gps):,} points)", show=True)
+    step = max(1, len(gps) // GPS_MAX_POINTS)
+    for i in range(0, len(gps), step):
+        folium.CircleMarker(gps[i], radius=1.5, color="#1f4fd1", fill=True, fill_opacity=0.5, weight=0,
+                            tooltip=f"obs {i}").add_to(pts)
+    pts.add_to(m)
 
     hmm = folium.FeatureGroup(name="HMM predicted route (red)", show=True)
     for line in res.get("hmm_route", []):
         if len(line) > 1:
-            folium.PolyLine(line, color="#d62728", weight=4, opacity=0.9).add_to(hmm)
+            folium.PolyLine(line, color="#d62728", weight=5, opacity=0.9).add_to(hmm)
     hmm.add_to(m)
 
-    pts = folium.FeatureGroup(name=f"Raw GPS ({len(gps):,} points)", show=True)
-    step = max(1, len(gps) // GPS_MAX_POINTS)
-    for i in range(0, len(gps), step):
-        folium.CircleMarker(gps[i], radius=2, color="#1f4fd1", fill=True, fill_opacity=0.8, weight=0,
-                            tooltip=f"obs {i}").add_to(pts)
-    pts.add_to(m)
+    if show_classifier:   # thinner line drawn over the thicker HMM line so both stay visible
+        clf = folium.FeatureGroup(name="Classifier-only route (orange)", show=True)
+        for line in res.get("classifier_route", []):
+            if len(line) > 1:
+                folium.PolyLine(line, color="#ff7f0e", weight=3, opacity=0.85).add_to(clf)
+        clf.add_to(m)
 
     folium.LayerControl(collapsed=False).add_to(m)
     m.get_root().html.add_child(folium.Element(LEGEND.format(trip=res["trip_id"])))
