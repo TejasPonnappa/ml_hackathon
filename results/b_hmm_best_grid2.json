@@ -1,0 +1,36 @@
+{
+  "params": {
+    "alpha": 0.25,
+    "beta": 4.0,
+    "invalid": 48.0,
+    "uturn": 8.0
+  },
+  "tuning_top1": 0.9529369449132612,
+  "classifier_only_top1_same_trips": 0.8874194173145561,
+  "tuned_on": "train OOF probabilities of lightgbm_tuned",
+  "n_trips": 78,
+  "n_obs": 180715,
+  "grid": {
+    "alpha": [
+      0.25,
+      0.5,
+      1.0
+    ],
+    "beta": [
+      2.0,
+      4.0,
+      8.0
+    ],
+    "invalid": [
+      12.0,
+      24.0,
+      48.0
+    ],
+    "uturn": [
+      2.0,
+      4.0,
+      8.0
+    ]
+  },
+  "seconds": 151.15169167518616
+}

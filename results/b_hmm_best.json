@@ -1,0 +1,66 @@
+{
+  "params": {
+    "alpha": 0.1,
+    "beta": 3.0,
+    "invalid": 48.0,
+    "uturn": 16.0
+  },
+  "tuning_top1": 0.9557037323963147,
+  "classifier_only_top1_same_trips": 0.8874194173145561,
+  "tuned_on": "train OOF probabilities of lightgbm_tuned",
+  "n_trips": 78,
+  "n_obs": 180715,
+  "grid": {
+    "alpha": [
+      0.05,
+      0.1,
+      0.25
+    ],
+    "beta": [
+      3.0,
+      4.0,
+      6.0
+    ],
+    "invalid": [
+      48.0,
+      100.0,
+      200.0
+    ],
+    "uturn": [
+      8.0,
+      16.0,
+      32.0
+    ]
+  },
+  "searched_range_all_grids": {
+    "alpha": [
+      0.05,
+      2.0
+    ],
+    "beta": [
+      0.5,
+      8.0
+    ],
+    "invalid": [
+      3.0,
+      200.0
+    ],
+    "uturn": [
+      0.0,
+      32.0
+    ]
+  },
+  "best_on_edge_of_this_grid": {
+    "alpha": false,
+    "beta": true,
+    "invalid": true,
+    "uturn": false
+  },
+  "best_on_edge_of_searched_range": {
+    "alpha": false,
+    "beta": false,
+    "invalid": false,
+    "uturn": false
+  },
+  "seconds": 186.22082209587097
+}
