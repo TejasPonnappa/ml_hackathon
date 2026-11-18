@@ -1,0 +1,7 @@
+[11:09:19] [xgboost] train rows=1,162,595 obs=180,715 trips=78 pos_rate=0.155
+[11:09:43] [xgboost] fold 1: macro_f1=0.9119 top1=0.8628 logloss=0.1158 fit=22.4s
+[11:10:04] [xgboost] fold 2: macro_f1=0.9413 top1=0.9035 logloss=0.0724 fit=20.4s
+[11:10:25] [xgboost] fold 3: macro_f1=0.9533 top1=0.9299 logloss=0.0604 fit=20.5s
+[11:10:46] [xgboost] fold 4: macro_f1=0.9144 top1=0.8660 logloss=0.1060 fit=21.1s
+[11:11:08] [xgboost] fold 5: macro_f1=0.9236 top1=0.8759 logloss=0.1086 fit=21.3s
+[11:11:40] [xgboost] CV macro_f1=0.9285±0.0179 top1=0.8863 | student_test macro_f1=0.9310 top1=0.8901 logloss=0.0843 continuity=0.9813 | fit=25.9s infer=0.22s
