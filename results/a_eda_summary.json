@@ -1,0 +1,62 @@
+{
+  "student_test": {
+    "trips": 10,
+    "obs_total": 19160,
+    "obs_per_trip_median": 1420.0,
+    "obs_per_trip_min": 262,
+    "obs_per_trip_max": 3958,
+    "missing_files": 0,
+    "nan_values": 0,
+    "frac_dt_1s_mean": 0.9819896936551981,
+    "trips_non_monotonic_time": 0,
+    "trips_with_gap_gt30s": 2,
+    "nodes_median": 6596.5,
+    "arcs_median": 13145.0,
+    "arcs_max": 56027,
+    "isolated_nodes_total": 0,
+    "components_median": 11.0,
+    "frac_two_way_mean": 0.926940290876092,
+    "route_fully_connected_trips": 9,
+    "route_arcs_per_obs_median": 0.22024222605428445,
+    "ref_dist_median_m_median": 4.749810381424318,
+    "lon_range": [
+      -93.3945625,
+      77.2621375
+    ],
+    "lat_range": [
+      42.651654,
+      61.669172
+    ],
+    "proj_vs_haversine_max_rel_err": 0.0037268063849457563
+  },
+  "train": {
+    "trips": 80,
+    "obs_total": 208417,
+    "obs_per_trip_median": 1529.0,
+    "obs_per_trip_min": 361,
+    "obs_per_trip_max": 19313,
+    "missing_files": 0,
+    "nan_values": 0,
+    "frac_dt_1s_mean": 0.938296103658152,
+    "trips_non_monotonic_time": 0,
+    "trips_with_gap_gt30s": 28,
+    "nodes_median": 9608.0,
+    "arcs_median": 19526.5,
+    "arcs_max": 307392,
+    "isolated_nodes_total": 0,
+    "components_median": 20.0,
+    "frac_two_way_mean": 0.9216733541064445,
+    "route_fully_connected_trips": 70,
+    "route_arcs_per_obs_median": 0.18911258146030058,
+    "ref_dist_median_m_median": 4.637258660240959,
+    "lon_range": [
+      -100.355453,
+      137.220476
+    ],
+    "lat_range": [
+      -34.62505,
+      61.2478225
+    ],
+    "proj_vs_haversine_max_rel_err": 0.005582673259089623
+  }
+}

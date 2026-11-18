@@ -1,0 +1,47 @@
+partition,trip_id,issues
+train,00000001,52 jumps > 60 m/s
+train,00000002,10 gaps > 30 s; route not fully connected
+train,00000004,2 gaps > 30 s
+train,00000005,1 jumps > 60 m/s
+train,00000006,3 gaps > 30 s
+train,00000008,1 jumps > 60 m/s
+train,00000011,1 gaps > 30 s
+train,00000013,103 jumps > 60 m/s
+train,00000014,1 gaps > 30 s
+train,00000019,route not fully connected
+train,00000021,2 gaps > 30 s; very long trip (15783 obs)
+train,00000024,2 gaps > 30 s; 6 jumps > 60 m/s
+train,00000028,4 gaps > 30 s; 2 jumps > 60 m/s
+train,00000031,1 jumps > 60 m/s
+train,00000032,1 gaps > 30 s; 365 jumps > 60 m/s
+train,00000033,route far from GPS (median 122 m); 3 jumps > 60 m/s; route not fully connected
+train,00000037,3 gaps > 30 s
+train,00000041,1 gaps > 30 s; route not fully connected
+train,00000042,22 gaps > 30 s; route not fully connected
+train,00000043,2 gaps > 30 s; 5 jumps > 60 m/s
+train,00000044,2 gaps > 30 s
+train,00000053,2 jumps > 60 m/s
+train,00000054,route far from GPS (median 140 m); 2 gaps > 30 s; very long trip (19313 obs)
+train,00000055,1 gaps > 30 s; 1 jumps > 60 m/s
+train,00000057,1 jumps > 60 m/s
+train,00000062,5 gaps > 30 s
+train,00000069,2 gaps > 30 s; route not fully connected
+train,00000070,1 gaps > 30 s
+train,00000075,route not fully connected
+train,00000078,2 gaps > 30 s
+train,00000079,2 jumps > 60 m/s
+train,00000080,2 gaps > 30 s; route not fully connected
+train,00000081,37 gaps > 30 s
+train,00000084,4 gaps > 30 s; very long trip (16031 obs)
+train,00000085,4 gaps > 30 s; 1 jumps > 60 m/s
+train,00000086,route not fully connected
+train,00000088,7 gaps > 30 s
+train,00000089,7 gaps > 30 s; route not fully connected
+train,00000090,1 gaps > 30 s
+train,00000092,4 jumps > 60 m/s
+train,00000093,1 jumps > 60 m/s
+train,00000098,2 gaps > 30 s; 2 jumps > 60 m/s
+student_test,00000000,1 jumps > 60 m/s
+student_test,00000040,1 jumps > 60 m/s
+student_test,00000065,1 gaps > 30 s
+student_test,00000076,1 gaps > 30 s; route not fully connected
