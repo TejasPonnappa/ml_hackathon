@@ -1,0 +1,58 @@
+{
+  "exported_model": "lightgbm_tuned",
+  "family": "Boosting (LightGBM, Bayesian-optimised)",
+  "hyperparameters": {
+    "learning_rate": 0.057161021316138726,
+    "n_estimators": 650,
+    "num_leaves": 26,
+    "min_child_samples": 56,
+    "subsample": 0.7962072844310213,
+    "colsample_bytree": 0.5232252063599989,
+    "reg_lambda": 0.26926469100861794,
+    "reg_alpha": 0.004809461967501573,
+    "objective": "binary",
+    "subsample_freq": 1,
+    "random_state": 42,
+    "n_jobs": -1,
+    "verbose": -1
+  },
+  "feature_cols": [
+    "dist_m",
+    "t_along",
+    "length_m",
+    "heading_diff",
+    "heading_cos",
+    "speed_mps",
+    "low_speed",
+    "rank",
+    "dist_gap",
+    "dist_ratio",
+    "n_cands",
+    "dist_prev1",
+    "dist_next1",
+    "dist_prev2",
+    "dist_next2",
+    "dist_win_mean",
+    "dt_prev",
+    "from_deg_in",
+    "to_deg_out"
+  ],
+  "candidate_K": 10,
+  "candidate_R_m": 50.0,
+  "scaler": null,
+  "selection_rule": "highest CV observation-level Top-1; within one fold-std, lowest CV log loss (see src/ml/compare_models.py and results/a_model_comparison.csv)",
+  "cv": {
+    "macro_f1_fold_mean": 0.9301067066548511,
+    "macro_f1_fold_std": 0.017713045442262283,
+    "top1_accuracy": 0.8874194173145561,
+    "log_loss": 0.09215466227940461
+  },
+  "student_test": {
+    "top1_accuracy": 0.8872651356993737,
+    "macro_f1": 0.9303671233438604,
+    "log_loss": 0.08513485119141448,
+    "route_continuity": 0.9824633488754226
+  },
+  "sha256_model_joblib": "56718b2f378e0772a9e4c4ee7160208578c2fd9f795a76cfaf75dbea2d399dd1",
+  "exported_at": "2026-11-18T13:18:33"
+}

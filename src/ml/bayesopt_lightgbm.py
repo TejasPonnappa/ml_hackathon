@@ -151,10 +151,18 @@ def main():
     if args.no_refit:
         return
     log("refitting best configuration with the shared harness (CV + student_test) ...")
-    tuned = run_experiment(name="lightgbm_tuned", family="Boosting (LightGBM, Bayesian-optimised)",
-                           make_model=lambda: LGBMClassifier(**best), config=best, needs_scaling=False,
-                           fit_kwargs_fn=fit_kwargs, history_fn=history)
+    run_experiment(name="lightgbm_tuned", family="Boosting (LightGBM, Bayesian-optimised)",
+                   make_model=lambda: LGBMClassifier(**best), config=best, needs_scaling=False,
+                   fit_kwargs_fn=fit_kwargs, history_fn=history)
+    write_comparison()
+
+
+def write_comparison():
+    """Untuned vs tuned from the two harness result files. If results/a_bench_inference.csv exists
+    (python -m src.ml.bench_inference lightgbm lightgbm_tuned), its same-conditions median inference
+    time is added, because single harness timings depend on machine load."""
     untuned = json.loads((R / "a_cv_lightgbm.json").read_text())
+    tuned = json.loads((R / "a_cv_lightgbm_tuned.json").read_text())
     comp = pd.DataFrame([{
         "model": name, "cv_macro_f1": r["cv"]["macro_f1_fold_mean"], "cv_macro_f1_std": r["cv"]["macro_f1_fold_std"],
         "cv_top1": r["cv"]["top1_accuracy"], "cv_log_loss": r["cv"]["log_loss"],
@@ -162,10 +170,19 @@ def main():
         "st_log_loss": r["student_test"]["log_loss"], "st_route_continuity": r["student_test"]["route_continuity"],
         "train_seconds_full_fit": r["train_seconds_full_fit"],
         "inference_seconds_student_test": r["inference_seconds_student_test"],
+        "n_estimators": r["config"]["n_estimators"], "num_leaves": r["config"]["num_leaves"],
     } for name, r in (("lightgbm_untuned", untuned), ("lightgbm_tuned", tuned))])
+    bench = R / "a_bench_inference.csv"
+    if bench.exists():
+        b = pd.read_csv(bench).set_index("model")["median_seconds"]
+        comp["inference_seconds_benchmark_median"] = [b.get("lightgbm"), b.get("lightgbm_tuned")]
     comp.to_csv(R / "a_bayesopt_comparison.csv", index=False)
     print(comp.round(4).to_string(index=False))
 
 
 if __name__ == "__main__":
-    main()
+    import sys
+    if "--compare-only" in sys.argv:
+        write_comparison()
+    else:
+        main()
